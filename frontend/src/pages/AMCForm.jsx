@@ -20,8 +20,13 @@ export default function AMCForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await API.post(`/amc/${assetId}`, formData);
-    navigate('/dashboard');
+    try {
+      await API.post(`/amc/${assetId}`, formData);
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Failed to save AMC:', err);
+      alert('Error saving AMC. Please check all fields.');
+    }
   };
 
   return (

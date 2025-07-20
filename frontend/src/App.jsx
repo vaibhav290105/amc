@@ -2,19 +2,27 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useEffect, useState } from 'react';
 
 import Login from './pages/Login';
+import Register from './pages/Register'; // <-- NEW IMPORT
 import Dashboard from './pages/Dashboard';
 import TechnicianDashboard from './pages/TechnicianDashboard';
 import AssetForm from './pages/AssetForm';
 import AMCForm from './pages/AMCForm';
 import PrivateRoute from './routes/PrivateRoute';
+import AMCDetails from './pages/AMCDetails';
 
 function App() {
   const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedRole = localStorage.getItem('role');
-    if (storedRole) setRole(storedRole);
+    setRole(storedRole);
+    setLoading(false);
   }, []);
+
+  if (loading) {
+    return <div className="p-10 text-xl">Loading...</div>;
+  }
 
   return (
     <Router>
@@ -22,23 +30,23 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} /> {/* <-- NEW ROUTE */}
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          {/* General Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Technician-only route */}
-          {role === 'TECHNICIAN' && (
-            <Route path="/technician" element={<TechnicianDashboard />} />
-          )}
+          {/* Technician-only */}
+          <Route path="/technician" element={<PrivateRoute allowedRoles={['TECHNICIAN']}><TechnicianDashboard /></PrivateRoute>} />
 
-          {/* Asset manager & admin routes */}
+
+          {/* Admin & Asset Manager */}
           {(role === 'ADMIN' || role === 'ASSET_MANAGER') && (
             <>
-              <Route path="/asset/add" element={<AssetForm />} />
-              <Route path="/asset/edit/:assetId" element={<AssetForm />} />
-              <Route path="/asset/:assetId/amc" element={<AMCForm />} />
+              <Route path="/add-asset" element={<AssetForm />} />
+              <Route path="/edit-asset/:assetId" element={<AssetForm />} />
+              <Route path="/asset/:assetId/amc-create" element={<AMCForm />} />
+              <Route path="/asset/:assetId/amc-details" element={<AMCDetails />} />
             </>
           )}
         </Route>

@@ -1,8 +1,9 @@
-const jwt = require('jsonwebtoken');
+import jwt from "jsonwebtoken";
 
-const authenticate = (req, res, next) => {
+export const authenticate = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.sendStatus(401);
+
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
@@ -11,12 +12,9 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const authorize = (...roles) => {
+export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) return res.sendStatus(403);
     next();
   };
 };
-
-module.exports = { authenticate, authorize };
-
