@@ -59,9 +59,12 @@ model AMCContract {
 
 model Task {
   id          String   @id @default(uuid())
-  type        String
   remarks     String?
+  title       String?
   status      String   @default("PENDING")
+  description String?
+  type        String
+  dueDate     DateTime? 
   assetId     String
   asset       Asset    @relation(fields: [assetId], references: [id])
   userId      String

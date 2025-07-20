@@ -72,8 +72,26 @@ router.post('/:assetId', async (req, res) => {
       where: { id: assetId },
       data: { underAMC: true },
     });
+    const amcStart = new Date(startDate); 
+    const dueDate = new Date(amcStart);
+    dueDate.setDate(dueDate.getDate() + 7); 
+    await prisma.task.create({
+      data: {
+        title: 'Initial AMC Inspection',
+        description: `Inspect asset ${asset.type} - ${asset.model} as part of AMC contract.`,
+        assetId: asset.id,
+        userId: asset.technicianId,     
+        type: 'AMC',                     
+        scheduledAt: new Date(),        
+        status: 'PENDING',
+        dueDate: dueDate              
+      
+      }
+    });
 
-    res.json(amc);
+
+
+    res.status(201).json({ message: 'AMC contract and task created successfully.', amc });
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });

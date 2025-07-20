@@ -16,7 +16,7 @@ export default function AssetForm() {
     licenseNumber: '',
     licenseExpiry: '',
     underAMC: false,
-    technicianId: '', // 👈 new field
+    technicianId: '', 
   });
 
   const [technicians, setTechnicians] = useState([]);
