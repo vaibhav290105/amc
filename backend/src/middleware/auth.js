@@ -1,5 +1,4 @@
-// ✅ middleware/auth.js (CommonJS style)
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const authenticate = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -20,3 +19,4 @@ const authorize = (...roles) => {
 };
 
 module.exports = { authenticate, authorize };
+
